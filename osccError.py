@@ -77,24 +77,14 @@ class OsccError:
             return int(self.values[key], 16)
         else:
             nKey = key + "_" + str(iter)
-            try:
-                return int(self.values[nKey], 16)
-            except KeyError:
-                #Key with index is not found. Assuming this key is occuring only once.
-                return int(self.values[key], 16)
+            return int(self.values[nKey], 16)
     
     def AnalyzeRule(self, ruleNode):
         iter = 0
-        try:
-            count = int(ruleNode["iterate"])
-        except:
-            count = 1
-
         while True:
-            self.StatementExecute(ruleNode, iter)
-            iter += 1
-            if(iter >= count):
+            if(not self.StatementExecute(ruleNode, iter)):
                 break
+            iter += 1
 
     def StatementExecute(self, ruleNode, iter):
         Variable={}
@@ -103,7 +93,7 @@ class OsccError:
                 try:
                     Variable[statementNode["index"]] = self.GetValues(statementNode.cdata, iter)
                 except KeyError:
-                    break
+                    return False
             elif(statementNode._name == "evaluation"):
                 Variable[statementNode["index"]] = eval(statementNode.cdata)
             elif(statementNode._name == "condition"):
@@ -115,6 +105,8 @@ class OsccError:
                 self.PrintRuleOutput(statementNode, Variable)
             else:
                 raise Exception("Unexpected token: " + statementNode._name)
+
+        return True
 
     def PrintRuleOutput(self, outputNode, Variable):
         for lineNode in outputNode.children:

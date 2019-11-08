@@ -24,7 +24,7 @@
       </OutputPrint>
    </AnalyzeRules>
 
-   <AnalyzeRules name="Wire error" iterate="4">
+   <AnalyzeRules name="Wire error">
       <variable index="0">CP Reg 1020019</variable>
       <condition>(Variable['0'] &amp; 0xA0000000 == 1)</condition>
       <variable index="1">CP HUID</variable>
