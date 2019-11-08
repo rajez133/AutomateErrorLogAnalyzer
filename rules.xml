@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<Rules>
+   <AnalyzeRules name="Failover">
+      <variable index="0">Current Card Group</variable>
+      <variable index="1">Last Requested Card Group</variable>
+      <variable index="2">Slot id</variable>
+      <condition>(Variable['0'] != Variable['1'])</condition>
+      <evaluation index="3">(Variable['2'] &amp; 0xF0) >> 4 - 1</evaluation>
+      <evaluation index="4">(Variable['2'] &amp; 0xFFFFFFF0) | (Variable['1'] &amp; 0x0F)</evaluation>
+      <OutputPrint>
+         <Line/>
+         <Line>
+            <Message>Failed Node: </Message>
+            <ValueIndex>3</ValueIndex>
+         </Line>
+         <Line>
+            <Message>Failed Card Group: </Message>
+            <ValueIndex>1</ValueIndex>
+         </Line>
+         <Line>
+            <Message>Failed Slot id: </Message>
+            <ValueIndex>4</ValueIndex>
+         </Line>
+      </OutputPrint>
+   </AnalyzeRules>
+
+   <AnalyzeRules name="Wire error" iterate="4">
+      <variable index="0">CP Reg 1020019</variable>
+      <condition>(Variable['0'] &amp; 0xA0000000 == 1)</condition>
+      <variable index="1">CP HUID</variable>
+      <OutputPrint>
+         <Line/>
+         <Line>
+            <Message>Processor with HUID: </Message>
+            <ValueIndex>1</ValueIndex>
+            <Message> switched over</Message>
+         </Line>
+      </OutputPrint>
+   </AnalyzeRules>
+</Rules>

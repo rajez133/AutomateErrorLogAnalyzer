@@ -1,0 +1,54 @@
+<Rules>
+	<!--This element defines an individual rule
+			name: Name of the rule -->
+	<AnalyzeRules name="">
+		<!--Text of this element will be used as a key to extract a particlular
+			value from errorlog. List of valid keys can be obtained by executing
+			the script as follows.
+			errl_parser.py --keyList --elog <errlog_path>
+			
+			index: index will be used to reference the value of this key, in
+			"condition" and evaluation element. index value should be unique inside
+			"AnalyzeRules" element.
+			
+			The value of this key can referenced in "condition" and "evaluation"
+			using "Variable['<index'>]". -->
+		<variable index=""></variable>
+		
+		<!--Text of this element should be a valid python expression. It can
+			reference values defined by other "variable" and "evaluation" elements.
+			Example for text: "Variable[0]*Variable[1]+2".
+			
+			index: index will be used to reference the value of this key, in
+			"condition" and "evaluation" element. index value should be unique inside
+			"AnalyzeRules" element.
+			
+			The value defined here can referenced in "condition" and "evaluation"
+			using "Variable['<index'>]". -->
+		<evaluation index=""></evaluation>
+		
+		<!--Text of this element should be a valid python relational expression.
+			It can reference values defined by other "variable" and "evaluation"
+			elements. There should be only one "condition" per "AnalyzeRule" element.
+			
+			Example for text: "Variable[0] != 5". -->
+		<condition></condition>
+		
+		<!--This element represents the format of output message which will be
+			printed if error condition is true. There should be only one "condition"
+			per "AnalyzeRule" element. -->
+		<OutputPrint>
+			<!--This element represents a line in output, which is composed of text
+			and values. 
+			
+			Message: tex to be prinetd
+			ValueIndex: index of the value (defined by "condition" or "evaluation"),
+						which should be appended in the message.
+			-->
+			<Line>
+				<Message></Message>
+				<ValueIndex></ValueIndex>
+			</Line>
+		</OutputPrint>
+	</AnalyzeRules>
+</Rules>

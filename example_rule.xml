@@ -1,0 +1,31 @@
+<AnalyzeRules name="Failover">
+	<variable index="0">Current Card Group</variable>
+	<variable index="1">Last Requested Card Group</variable>
+	<!--"Current Card Group" not same as "Last Requested Card Group"-->
+	<condition>(Variable['0'] != Variable['1'])</condition>
+	<!--Since this value is not used in condition it is defined after condition-->
+	<variable index="2">Slot id</variable>
+	<!--Calculating <node_value>-->
+	<evaluation index="3">(Variable['2'] &amp; 0xF0) >> 4 - 1</evaluation>
+	<!--Calculating <slot_id>-->
+	<evaluation index="4">(Variable['2'] &amp; 0xFFFFFFF0) | (Variable['1'] &amp; 0x0F)</evaluation>
+	<OutputPrint>
+		<!--Empty line-->
+		<Line/>
+		<!--Failed Node: <node_value>-->
+		<Line>
+			<Message>Failed Node: </Message>
+			<ValueIndex>3</ValueIndex>
+		</Line>
+		<!--Failed Card Group: <card_group>-->
+		<Line>
+			<Message>Failed Card Group: </Message>
+			<ValueIndex>1</ValueIndex>
+		</Line>
+		<!--Failed Slot id: <slot_id>-->
+		<Line>
+			<Message>Failed Slot id: </Message>
+			<ValueIndex>4</ValueIndex>
+		</Line>
+	</OutputPrint>
+</AnalyzeRules>
