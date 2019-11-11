@@ -16,12 +16,56 @@ import threading
 import itertools
 import sys
 import untangle
+import argparse
 
 import osccError
+
+parser = argparse.ArgumentParser(
+    description='Analyses the error log to determine the root cause of failure, \
+        and displays the parts to be replaced')
+
+group = parser.add_mutually_exclusive_group()
+group.add_argument(
+    '--ruleHelp',
+    action='store_true',
+    help='to print the help message on how to add custom rule')
+group.add_argument(
+    '--keyList',
+    action='store_true',
+    help='to print list of keys available in the oscc error log')
+group.add_argument(
+    '--errlEducation',
+    action='store_true',
+    help='to print the description of each keys available in the oscc error log')
+group.add_argument(
+    '--elog',
+    metavar='ELOG_PATH',
+    help='path to the error log file to be analyzed')
 
 spin_flag = True
 oscc_errors = []
 rule_xml = None
+
+
+def display_rule_help():
+    print("\nRule XML Format: \n")
+
+    with open("rule_xml_format.xml", 'r') as stream:
+        print(stream.read())
+
+
+def display_key_list():
+    print("\nList of keys:\n")
+
+    with open("key_list.txt", 'r') as stream:
+        print(stream.read())
+
+
+def display_error_log_help():
+    print("\nClock error log help:\n")
+
+    with open("error_log_help.txt", 'r') as stream:
+        print(stream.read())
 
 
 def spin_the_cursor():
@@ -100,13 +144,11 @@ def analyze_error():
             err.analyze_rule(childnode)
 
 
-if __name__ == '__main__':
-    errlog_path = "errlog.txt"
-
+def parse_analyze_error_log(elog_path):
     thread1 = threading.Thread(target=spin_the_cursor)
     thread2 = threading.Thread(
         target=parse_err_log,
-        kwargs={"errlog_path": errlog_path})
+        kwargs={"errlog_path": elog_path})
     thread3 = threading.Thread(target=parse_rule_xml)
 
     thread1.start()
@@ -120,3 +162,16 @@ if __name__ == '__main__':
     analyze_error()
 
     print("\n\nThanks for Using this Script, Have a Great Day !!\n")
+
+
+if __name__ == '__main__':
+    args = parser.parse_args()
+
+    if(args.ruleHelp):
+        display_rule_help()
+    elif(args.keyList):
+        display_key_list()
+    elif(args.errlEducation):
+        display_error_log_help()
+    else:
+        parse_analyze_error_log(args.elog)

@@ -1,0 +1,89 @@
+CP HUID                  
+CP RID                   
+CP EC                    
+CP Reg 1007              
+CP Reg 2810              
+CP Reg 2813              
+CP Reg 2814              
+CP Reg 2815              
+CP Reg 2816              
+CP Reg 2804              
+CP Reg 281D0             
+CP Reg 281D1             
+CP Reg 281D2             
+CP Reg 281D3             
+CP Reg 281D4             
+CP Reg 1020019
+
+Current Card Group       
+Current Selection Mode   
+Last Requested Card Group
+Last requested Selection 
+                         
+Slot id                  
+Group                    
+Power status             
+                         
+Clock Domain             
+Steering mode            
+PLL speed                
+PLL output enabled       
+PLL input loss           
+PLL lock loss            
+PLL register value       
+PLL register value       
+PLL register value       
+PLL register value       
+CRC output enabled       
+CRC bypass               
+CRC lock loss            
+CRC status, feedback loss
+CRC myPLL I/P loss       
+CRC myPLL I/P frequency f
+CRC myPLL I/P disabled   
+CRC myPLL I/P selected   
+CRC otherPLL I/P loss    
+CRC otherPLL I/P frequenc
+CRC otherPLL I/P disabled
+CRC otherPLL I/P selected
+CRC otherCRC I/P loss    
+CRC otherCRC I/P frequenc
+CRC otherCRC I/P disabled
+CRC otherCRC I/P selected
+CRC register value 0       
+CRC register value 1     
+CRC register value 2     
+CRC register value 3     
+CRC register value 4     
+CRC register value 5     
+CRC register value 6     
+CRC register value 7     
+CRC register value 8     
+CRC register value 9     
+CRC register value 10     
+CRC register value 11
+                         
+Slot id                  
+Set mode                 
+Use OSC 0                
+Use OSC 1                
+                         
+Control group            
+Power available          
+Outputs enabled          
+Control unit             
+Switch control 0         
+Switch control 1         
+Propagation              
+Control unit             
+Switch control 0         
+Switch control 1         
+Propagation              
+Control unit             
+Switch control 0         
+Switch control 1         
+Propagation              
+Control unit             
+Switch control 0         
+Switch control 1         
+Propagation
