@@ -30,19 +30,25 @@ class OsccError:
             if match_sev:
                 date = datetime.datetime.strptime(
                     match_time[0][29:48], "%m/%d/%Y %H:%M:%S")
-                # print(date,time.mktime(date.timetuple()))
                 self._severity = match_sev[0][29:49]
                 self._time_stamp = time.mktime(date.timetuple())
 
         found = re.findall(
+            r"\|\s*Callout\sSection\s*\|.*?\n*\|-*\|\s*",
+            error_log[0], re.M | re.S)
+
+        if(len(found) != 0):
+            self._callout_data = found[0]
+        else:
+            self._callout_data = None
+
+        found = re.findall(
             r"\|-*\|\n*\|\s*User\sDefined\sData\s*\|\n*\|-*\|(?!.*\|-*\|\n*\|\s*User\sDefined\sData\s*\|\n*\|-*\|).*?\n*\|-*\|\n*\|\s*Manufacturing\sInformation\s*\|\n*\|-*\|",
             error_log[0], re.M | re.S)
-        # print(len(found))
         if len(found) == 0:
             found = re.findall(
                 r"\|\s*OSCC\sCP\sSense\sInformation\s*\|.*?\n*\|-*\|\n*\|\s*User\sDefined\sData\s*\|",
                 error_log[0], re.M | re.S)
-        # print(len(found))
         self.extract_usre_data(found)
 
     def extract_usre_data(self, user_data_list):
@@ -66,7 +72,6 @@ class OsccError:
                     value = value[1:-1]
                 key = key.strip()
                 value = value.strip()
-                # print(value)
                 if key not in self._values:
                     self._values[key] = value
                 else:
@@ -74,11 +79,8 @@ class OsccError:
                     for each_key in self._values:
                         if key in each_key:
                             count = count + 1
-                    # print(count)
                     n_key = key + "_" + str(count)
-                    # print(n_key)
                     self._values[n_key] = value
-                    # print(errid+":"+n_key+":"+value)
 
     def get_values(self, key, iter):
         if(iter == 0):
@@ -109,8 +111,9 @@ class OsccError:
                 if(eval(statement_node.cdata) != True):
                     break
                 else:
-                    print rule_node["name"] + \
-                        " detected in error " + self.platform_id
+                    print(rule_node["name"] + \
+                        " detected in error " + self.platform_id + "\n")
+                    print(self._callout_data)
             elif(statement_node._name == "OutputPrint"):
                 self.print_rule_output(statement_node, Variable)
             else:
@@ -132,4 +135,4 @@ class OsccError:
                 else:
                     raise Exception("Unexpected token: " + msg_node._name)
 
-            print msg
+            print(msg)
