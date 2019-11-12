@@ -76,7 +76,7 @@ def spin_the_cursor():
 
     print("\n Parsing in progress, please wait.....", end='')
     while spin_flag:
-        sys.stdout.write(spinner.next())
+        sys.stdout.write(next(spinner))
         sys.stdout.flush()
         sys.stdout.write('\b')
 
@@ -84,7 +84,8 @@ def spin_the_cursor():
 def parse_err_log(errlog_path):
     global spin_flag, oscc_errors
 
-    f = open(errlog_path, 'r')
+    # Ignore the non-ascii characters while reading
+    f = open(errlog_path, 'r', errors="ignore")
     start = True
 
     while True:
