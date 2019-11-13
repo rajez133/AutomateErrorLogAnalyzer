@@ -49,6 +49,8 @@ class OsccError:
             found = re.findall(
                 r"\|\s*OSCC\sCP\sSense\sInformation\s*\|.*?\n*\|-*\|\n*\|\s*User\sDefined\sData\s*\|",
                 error_log[0], re.M | re.S)
+        if len(found) ==0:
+            found = re.findall(r"\|\s*OSCC\sCP\sSense\sInformation\s*\|.*?\n*\|-*\|",error_log[0], re.M | re.S)
         self.extract_usre_data(found)
 
     def extract_usre_data(self, user_data_list):
