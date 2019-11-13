@@ -60,6 +60,54 @@ arguments:
 
 Also, there is an example xml rule template(*example_rule.xml*) provided as a part of the repo.
 
+## Execution Flow
+
+```ascii
+                                            +---------------+
+                                            |     START     |
+                                            +-------+-------+
+                                                    |
+                                         +----------v------------+
+                                         |                       |
+                                         |  Collect errorlogs,   |
+                                         |  define input rules   |
+                                         |                       |
+                                         +----------+------------+
+                                                    |
+                                    +---------------v------------------+
+                                    |                                  |
+                                    |   Process the user defined       |
+                                    |  error condition rules, Process  |
+                                    |  the error logs and store the    |
+                                    |  data in suitable data structure |
+                                    |                                  |
+                                    +---------------+------------------+
+                                                    |
+                                          +---------v------------+
+                                          | Check the error log  |
+                                          | to see if any of the |
+                                          | user specified rule  |
+                                          | gets satisfied.      |
+                                          |                      |
+                                          +---------+------------+
+                                                    |
+                                          +---------v-------------+
+                                          | Error condition       |
+                 +------------------------+ found in the logs     +-----------------+
+                 |                        |                       |                 |
+                 |                        +-----------------------+                 |
+                 v                                                                  |
++----------------+----------------+                                                 |
+|Print the root cause of          |                                                 |
+|failure and details of part      +----------------+      +-------------------------+
+|to be replaced.                  |                |      |
++---------------------------------+                |      |
+                                            +------v------v---+
+                                            |       END       |
+                                            +-----------------+
+
+```
+
 ## Contact
 
 Manojkiran Eda - [@manojkiraneda](https://github.com/manojkiraneda)
