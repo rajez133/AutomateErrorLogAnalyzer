@@ -137,11 +137,11 @@ def parse_rule_xml():
 def analyze_error():
     print("\n\n#####################   FAILURE ANALYSIS   #####################\n")
 
-    for childnode in rule_xml.Rules.children:
-        if (childnode._name != "AnalyzeRules"):
-            raise Exception("Unexpected token: " + childnode._name)
-
-        for err in oscc_errors:
+    for err in oscc_errors:
+        for childnode in rule_xml.Rules.children:
+            if (childnode._name != "AnalyzeRules"):
+                raise Exception("Unexpected token: " + childnode._name)
+            
             err.analyze_rule(childnode)
 
 

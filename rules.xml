@@ -21,6 +21,7 @@
             <Message>Failed Slot id: </Message>
             <ValueIndex>4</ValueIndex>
          </Line>
+         <callout/>
       </OutputPrint>
    </AnalyzeRules>
 
@@ -35,6 +36,27 @@
             <ValueIndex>1</ValueIndex>
             <Message> switched over</Message>
          </Line>
+         <Line/>
+         <callout/>
+      </OutputPrint>
+   </AnalyzeRules>
+
+   <AnalyzeRules name="Power failure">
+      <variable index="0" type="s">Power status</variable>
+      <condition>(Variable['0'] == 'Power failure')</condition>
+      <variable index="1">CP HUID</variable>
+      <OutputPrint>
+         <Line/>
+         <callout/>
+      </OutputPrint>
+   </AnalyzeRules>
+
+   <AnalyzeRules name="PLL loss of lock">
+      <variable index="0">PLL register value 4</variable>
+      <condition>((Variable['0'] &amp; 0x1) == 1)</condition>
+      <OutputPrint>
+         <Line/>
+         <callout/>
       </OutputPrint>
    </AnalyzeRules>
 </Rules>

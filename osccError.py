@@ -49,8 +49,9 @@ class OsccError:
             found = re.findall(
                 r"\|\s*OSCC\sCP\sSense\sInformation\s*\|.*?\n*\|-*\|\n*\|\s*User\sDefined\sData\s*\|",
                 error_log[0], re.M | re.S)
-        if len(found) ==0:
-            found = re.findall(r"\|\s*OSCC\sCP\sSense\sInformation\s*\|.*?\n*\|-*\|",error_log[0], re.M | re.S)
+        if len(found) == 0:
+            found = re.findall(
+                r"\|\s*OSCC\sCP\sSense\sInformation\s*\|.*?\n*\|-*\|", error_log[0], re.M | re.S)
         self.extract_usre_data(found)
 
     def extract_usre_data(self, user_data_list):
@@ -60,6 +61,8 @@ class OsccError:
 
         self._values = {}
 
+        previous_key = ""
+        continous_key_index = 1
         for line in user_data.split('\n'):
             line = line.rstrip()
             if ":" in line:
@@ -74,22 +77,37 @@ class OsccError:
                     value = value[1:-1]
                 key = key.strip()
                 value = value.strip()
+
+                if(key == previous_key):
+                    continous_key_index += 1
+                    key += " " + str(continous_key_index)
+                else:
+                    previous_key = key
+                    continous_key_index = 1
+
                 if key not in self._values:
                     self._values[key] = value
                 else:
                     count = 0
                     for each_key in self._values:
-                        if key in each_key:
+                        if (key + "_") in each_key:
                             count = count + 1
+                    #To count the fist key, which will not have "_", add 1
+                    count += 1
                     n_key = key + "_" + str(count)
                     self._values[n_key] = value
 
-    def get_values(self, key, iter):
+    def get_values(self, key, iter, type):
         if(iter == 0):
-            return int(self._values[key], 16)
+            str_value = self._values[key]
         else:
             new_key = key + "_" + str(iter)
-            return int(self._values[new_key], 16)
+            str_value = self._values[new_key]
+
+        if(type == 's'):
+            return str_value
+        else:
+            return int(str_value, 16)
 
     def analyze_rule(self, rule_node):
         iter = 0
@@ -104,7 +122,8 @@ class OsccError:
             if(statement_node._name == "variable"):
                 try:
                     Variable[statement_node["index"]] = self.get_values(
-                        statement_node.cdata, iter)
+                        statement_node.cdata, iter,
+                        statement_node["type"])
                 except KeyError:
                     return False
             elif(statement_node._name == "evaluation"):
@@ -113,9 +132,8 @@ class OsccError:
                 if(eval(statement_node.cdata) != True):
                     break
                 else:
-                    print(rule_node["name"] + \
-                        " detected in error " + self.platform_id + "\n")
-                    print(self._callout_data)
+                    print(rule_node["name"] +
+                          " detected in error " + self.platform_id + "\n")
             elif(statement_node._name == "OutputPrint"):
                 self.print_rule_output(statement_node, Variable)
             else:
@@ -125,16 +143,19 @@ class OsccError:
 
     def print_rule_output(self, output_node, Variable):
         for line_node in output_node.children:
-            if(line_node._name != "Line"):
+            if(line_node._name == "Line"):
+                msg = ""
+                for msg_node in line_node.children:
+                    if(msg_node._name == "Message"):
+                        msg += msg_node.cdata
+                    elif(msg_node._name == "ValueIndex"):
+                        msg += hex(Variable[msg_node.cdata])
+                    else:
+                        raise Exception("Unexpected token: " + msg_node._name)
+
+                print(msg)
+            elif (line_node._name == "callout"):
+                if(self._callout_data != None):
+                    print(self._callout_data)
+            else:
                 raise Exception("Unexpected token: " + line_node._name)
-
-            msg = ""
-            for msg_node in line_node.children:
-                if(msg_node._name == "Message"):
-                    msg += msg_node.cdata
-                elif(msg_node._name == "ValueIndex"):
-                    msg += hex(Variable[msg_node.cdata])
-                else:
-                    raise Exception("Unexpected token: " + msg_node._name)
-
-            print(msg)
