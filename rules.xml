@@ -5,27 +5,27 @@
       <variable index="1">Last Requested Card Group</variable>
       <variable index="2">Slot id</variable>
       <condition>(Variable['0'] != Variable['1'])</condition>
-      <evaluation index="3">(Variable['2'] &amp; 0xF0) >> 4 - 1</evaluation>
-      <evaluation index="4">(Variable['2'] &amp; 0xFFFFFFF0) | (Variable['1'] &amp; 0x0F)</evaluation>
+      <!--Finding the "Failed Node" using "Slot id" value.
+            Node id is available in 7th nibble of "Slot id" as indexed by 1 -->
+      <evaluation index="3">((Variable['2'] &amp; 0x000000F0) >> 4) - 1</evaluation>
+      <evaluation index="4">(Variable['2'] % 16)</evaluation>
       <OutputPrint>
+         <Line>
+            <Message>Clock card failover details</Message>
+         </Line>
          <Line/>
          <Line>
             <Message>Failed Node: </Message>
             <ValueIndex>3</ValueIndex>
          </Line>
          <Line>
-            <Message>Failed Card Group: </Message>
-            <ValueIndex>1</ValueIndex>
-         </Line>
-         <Line>
-            <Message>Failed Slot id: </Message>
+            <Message>Failed card: OSC-</Message>
             <ValueIndex>4</ValueIndex>
          </Line>
-         <callout/>
       </OutputPrint>
    </AnalyzeRules>
 
-   <AnalyzeRules name="Wire error">
+   <!--AnalyzeRules name="Wire error">
       <variable index="0">CP Reg 1020019</variable>
       <condition>(Variable['0'] &amp; 0xA0000000 == 1)</condition>
       <variable index="1">CP HUID</variable>
@@ -37,26 +37,51 @@
             <Message> switched over</Message>
          </Line>
          <Line/>
-         <callout/>
       </OutputPrint>
-   </AnalyzeRules>
+   </AnalyzeRules-->
 
    <AnalyzeRules name="Power failure">
       <variable index="0" type="s">Power status</variable>
       <condition>(Variable['0'] == 'Power failure')</condition>
-      <variable index="1">CP HUID</variable>
+      <variable index="1">Slot id</variable>
+      <!--Finding the "Failed Node" using "Slot id" value.
+            Node id is available in 7th nibble of "Slot id" as indexed by 1 -->
+      <evaluation index="2">((Variable['1'] &amp; 0x000000F0) >> 4) - 1</evaluation>
+      <evaluation index="3">(Variable['1'] % 16)</evaluation>
       <OutputPrint>
          <Line/>
-         <callout/>
+         <Line>
+            <Message>Power failure detetcted</Message>
+         </Line>
+         <Line>
+            <Message>Failed Node: </Message>
+            <ValueIndex>2</ValueIndex>
+         </Line>
+         <Line>
+            <Message>Failed card: OSC-</Message>
+            <ValueIndex>3</ValueIndex>
+         </Line>
       </OutputPrint>
    </AnalyzeRules>
 
    <AnalyzeRules name="PLL loss of lock">
       <variable index="0">PLL register value 4</variable>
       <condition>((Variable['0'] &amp; 0x1) == 1)</condition>
+      <variable index="1">Slot id</variable>
+      <!-- Storing this value as string, to print complete 32 bit value-->
+      <variable index="2" type="s">PLL register value 4</variable>
       <OutputPrint>
-         <Line/>
-         <callout/>
+         <Line>
+            <Message>PLL unlock detected</Message>
+         </Line>
+         <Line>
+            <Message>Slot id: </Message>
+            <ValueIndex>1</ValueIndex>
+         </Line>
+         <Line>
+            <Message>PLL register data: </Message>
+            <ValueIndex>2</ValueIndex>
+         </Line>
       </OutputPrint>
    </AnalyzeRules>
 </Rules>

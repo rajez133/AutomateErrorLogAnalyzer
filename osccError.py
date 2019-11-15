@@ -110,11 +110,14 @@ class OsccError:
             return int(str_value, 16)
 
     def analyze_rule(self, rule_node):
+        self._found_error = False
         iter = 0
         while True:
             if(not self.statement_execute(rule_node, iter)):
                 break
             iter += 1
+        
+        return self._found_error
 
     def statement_execute(self, rule_node, iter):
         Variable = {}
@@ -132,8 +135,8 @@ class OsccError:
                 if(eval(statement_node.cdata) != True):
                     break
                 else:
-                    print(rule_node["name"] +
-                          " detected in error " + self.platform_id + "\n")
+                    self._found_error = True
+                    print("\n")
             elif(statement_node._name == "OutputPrint"):
                 self.print_rule_output(statement_node, Variable)
             else:
@@ -149,13 +152,22 @@ class OsccError:
                     if(msg_node._name == "Message"):
                         msg += msg_node.cdata
                     elif(msg_node._name == "ValueIndex"):
-                        msg += hex(Variable[msg_node.cdata])
+                        if(type(Variable[msg_node.cdata]) == type("")):
+                            msg += Variable[msg_node.cdata]
+                        else:
+                            msg += hex(Variable[msg_node.cdata])
                     else:
                         raise Exception("Unexpected token: " + msg_node._name)
 
                 print(msg)
-            elif (line_node._name == "callout"):
-                if(self._callout_data != None):
-                    print(self._callout_data)
             else:
                 raise Exception("Unexpected token: " + line_node._name)
+
+    def print_callout(self):
+        if(self._callout_data != None):
+
+            #remove first three lines
+            callout = '\n'.join(self._callout_data.split('\n')[3:])
+
+            print("\nHW part/s to be replaced\n")
+            print(callout)

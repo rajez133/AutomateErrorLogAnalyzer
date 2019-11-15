@@ -5,15 +5,19 @@
 		<!--Text of this element will be used as a key to extract a particlular
 			value from errorlog. List of valid keys can be obtained by executing
 			the script as follows.
-			errl_parser.py --keyList --elog <errlog_path>
+			errl_parser.py \-\-keyList \-\-elog <errlog_path>
 			
 			index: index will be used to reference the value of this key, in
 			"condition" and evaluation element. index value should be unique inside
 			"AnalyzeRules" element.
 			
 			The value of this key can referenced in "condition" and "evaluation"
-			using "Variable['<index'>]". -->
-		<variable index=""></variable>
+			using "Variable['<index'>]".
+			
+			type: indicates the type of the variable.
+					defalut- hexadecimal int
+					"s": string -->
+		<variable index="" type=""></variable>
 		
 		<!--Text of this element should be a valid python expression. It can
 			reference values defined by other "variable" and "evaluation" elements.
